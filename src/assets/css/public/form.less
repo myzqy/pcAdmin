@@ -1,0 +1,105 @@
+.btn-default:disabled{
+  opacity: 0.5;
+  cursor: default;
+}
+.btn{
+  padding:5px 10px;
+  border:1px solid #bbb;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #555;
+  font-size:14px;
+  cursor:pointer;
+  vertical-align: middle;
+  &:hover{
+    background-color: #f0f0f0;
+  }
+  &.btn-primary{
+    border:1px solid @primary;
+    background-color: @primary;
+    color: #fff;
+    &:hover{
+      background-color: @primaryHover;
+    }
+  }
+  &.btn-success{
+    border:1px solid @success;
+    background-color: @success;
+    color: #fff;
+    &:hover{
+      background-color: @successHover;
+    }
+  }
+  &.btn-danger{
+    border:1px solid @danger;
+    background-color: @danger;
+    color: #fff;
+    &:hover{
+      background-color: @dangerHover;
+    }
+  }
+  &.btn-warning{
+    border:1px solid @warning;
+    background-color: @warning;
+    color: #fff;
+    &:hover{
+      background-color: @warningHover;
+    }
+  }
+  &.btn-high{
+    padding:12px 10px;
+    font-size:16px;
+  }
+  &.danger{
+    border: 1px solid @danger;
+    color: @danger;
+  }
+  &.btn-high{
+    height:42px;
+    line-height:100%;
+  }
+}
+
+
+.input{
+  width: 184px;
+  height: 30px;
+  padding:0 10px;
+  border:1px solid #cfdadd;
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: #555; 
+  font-size:14px;
+  line-height: 30px;
+  vertical-align: middle;
+  &.input-long{
+    width: 525px;
+  }
+  &.warning {
+    border:1px solid @warning;
+    color: @warning;
+  }
+  &.primary {
+    border:1px solid @primary;
+    color: @primary;
+  }
+  &.success {
+    border:1px solid @success;
+    color: @success;
+  }
+  &.danger {
+    border:1px solid @danger;
+    color: @danger;
+  }
+  &:focus{
+    border:1px solid #19a9d5;
+  }
+  &.input-login {
+      width: 348px;
+      height: 42px;
+      line-height:42px;
+  }
+  &.input-small{
+    width:235px;
+  }
+}
