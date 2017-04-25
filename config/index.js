@@ -7,7 +7,6 @@ module.exports = {
     index: path.resolve(__dirname, '../dist/index.html'),
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    // assetsPublicPath: '/',
     assetsPublicPath: '/',
     productionSourceMap: true,
     // Gzip off by default as many popular static hosts such as
@@ -24,11 +23,10 @@ module.exports = {
   },
   dev: {
     env: require('./dev.env'),
-    port: 8088,
-    autoOpenBrowser: true, 
+    port: 8082,
+    autoOpenBrowser: true,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    // assetsPublicPath: '/',
     proxyTable: {},
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README
@@ -38,13 +36,3 @@ module.exports = {
     cssSourceMap: false
   }
 }
-
-
-// {
-//   "timestamp": 1492761735860,
-//   "status": 403,
-//   "error": "Forbidden",
-//   "exception": "org.springframework.security.access.AccessDeniedException",
-//   "message": "Access Denied",
-//   "path": "/rule/iftttRule"
-// }

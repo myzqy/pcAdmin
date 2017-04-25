@@ -8,7 +8,7 @@ export default{
     url,
     data,
     type,
-    success,
+    success=()=>{},
     error=()=>{},
     headers={
       "Accept": "application/json",

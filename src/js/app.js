@@ -10,6 +10,12 @@ export default {
   "login" : head+"/login",//获取手机验证码
   "changePassword" : head+"/changePassword",//修改密码
 
+  //用户管理
+  "userProfile" : head+"/subUser/profile",//添加/修改用户  获取用户详情
+  // "userNew" : head+"/subUser/profile ",//添加用户
+  "getUserList" : head+"/subUser/list",//获取用户列表
+  "userDelete" : head+"/subUser/delete",//删除用户
+
   //设备管理
   "devList" : head+"/dev/list",//设备管理列表
 }

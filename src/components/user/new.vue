@@ -13,6 +13,32 @@
               </td>
           </tr>
           <tr>
+            <th>{{userType.title}}</th>
+            <td>
+              <select v-model="userType.value" :value="userType.value">
+                <option>超管用户</option>
+                <option>厂家用户</option>
+                <option>环保局用户</option>
+              </select>
+              <!--<label class="cp mr10">
+                <input type="radio" name="a" class="mr5" @click="aaa(userType.a)" :checked="userType.superAdmin.checked" v-model="userType.a">
+                <span class="vm">{{userType.superAdmin.value}}</span>
+              </label>
+              <label class="cp mr10">
+                <input type="radio" name="b" class="mr5" @click="aaa(userType.a)" :checked="userType.commonAdmin.checked" v-model="userType.a">
+                <span class="vm">{{userType.commonAdmin.value}}</span>
+                <template v-if="userType.commonAdmin.checked">
+                  <select>
+                    <option v-for="val in userType.commonAdmin.list">{{val.value}}</option>
+                  </select>  
+                </template>
+              </label>-->
+              <!--<select>
+                <option v-for="val in userType.list"></option>
+              </select>-->
+            </td>
+          </tr>
+          <tr>
               <th></th>
               <td colspan="2">
                   <div class="mt30">
@@ -56,6 +82,18 @@ export default {
             }
         },
         {
+            title : "初始密码",
+            value : "",
+            hint : "",
+            placeholder : "请输入初始密码",
+            warning : false,
+            success : false,
+            blur(val){
+              //判断是否为密码格式
+              Check.ifPassword(val,["初始密码不能为空"]);
+            }
+        },
+        {
             title : "手机",
             value : "",
             hint : "",
@@ -81,6 +119,23 @@ export default {
             }
         }
       ],
+      userType : {
+        value : "超管用户",
+        title : "用户类型",
+        // superAdmin : {
+        //   value : "超管用户",
+        //   checked : true,
+        // },
+        // commonAdmin : {
+        //   value : "普通用户",
+        //   checked : false,
+        //   list : [{
+        //     value : "厂家用户"
+        //   },{
+        //     value : "环保局用户"
+        //   }]
+        // },
+      },
       submitClass : "btn-primary",
       submitValue : "保存",
       submitDisabled : false,
