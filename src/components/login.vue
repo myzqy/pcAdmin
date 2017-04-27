@@ -192,8 +192,8 @@ export default {
             localStorage.password = "";
             localStorage.rememberPassword = true;
           }
-          window.userInfo = r;
-          localStorage.userInfo = JSON.stringify(r);
+          window.userToken = r;
+          localStorage.userToken = JSON.stringify(r);
           self.$router.push("/user");
           console.log(r,"success");
         },

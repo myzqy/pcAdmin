@@ -147,7 +147,7 @@ export default {
           });
         },
         headers : {
-          Authorization: "Bearer "+userInfo.access_token
+          Authorization: "Bearer "+userToken.access_token
         }
       });
     }

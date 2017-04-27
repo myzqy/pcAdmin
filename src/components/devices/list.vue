@@ -180,7 +180,7 @@ export default {
         error (r){
         },
         headers : {
-          Authorization: "Bearer "+userInfo.access_token
+          Authorization: "Bearer "+userToken.access_token
         }
       });
     }

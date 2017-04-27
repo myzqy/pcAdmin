@@ -16,6 +16,3 @@ new Vue({
   components: { App }
 });
 
-//获取全局信息
-window.pid = "00000000000";
-window.userInfo = JSON.parse(localStorage.userInfo);

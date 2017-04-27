@@ -41,7 +41,7 @@ export default {
     navView,
     headerView,
   },
-  computed: {
+  computed: { 
       
   }, 
   created(){
@@ -49,14 +49,26 @@ export default {
       setTimeout(()=>{
         document.getElementById("app").setAttribute("class","show");
       },50)
-    });
+    }); 
+    //获取全局信息
+    window.pid = "00000000000";
+    window.userToken = (localStorage.userToken&&JSON.parse(localStorage.userToken))||{};
+    var self = this;
+    //获取用户信息
     let args = {"Uid":-1};
-    commitAjax.AJAX(App.checkCaptcha,args,"GET",function (r) {
-      self.photoCode.captchaToken = r.captchaToken;
-    },function(r){
-      val.warning = true;
-      val.hint = "图形码错误";
-      val.success = false;
+    commitAjax.AJAX({
+      url : App.userProfile,
+      data : args,
+      type : "GET",
+      success(r){
+        window.userInfo = r;
+      },
+      error(r){
+        self.$router.push("/");
+      },
+      headers : {
+        Authorization: "Bearer "+userToken.access_token
+      }
     });
   }
 }

@@ -19,6 +19,7 @@ export default{
   }){
     // if(_AjaxFlag) {
       // window._AjaxFlag = false;
+      console.log(url,"url");
       $.ajax({
         url: url,
         data: data,
