@@ -59,7 +59,7 @@ export default {
     search,
     page,
     modal
-  }
+  },
   data () {
     return {
       location : [{
@@ -187,13 +187,13 @@ export default {
   created(){
     var self = this;
     //获取用户信息
-    let args = {"Uid":-1};
+    let args = {};
     commitAjax.AJAX({
-      url : App.userProfile,
+      url : App.getUserList,
       data : args,
       type : "GET",
       success(r){
-        window.userInfo = r;
+        console.log(r,"r");
       },
       error(r){
         self.$router.push("/");
