@@ -45,12 +45,21 @@
 </template>
 
 <script>
-import location from '../tool/location'
-import search from '../tool/search'
-import page from '../tool/page'
-import modal from '../tool/modal'
+import $ from 'n-zepto';
+import App from '@/js/app';
+import commitAjax from '@/js/commitAjax';
+import location from '@/components/tool/location'
+import search from '@/components/tool/search'
+import page from '@/components/tool/page'
+import modal from '@/components/tool/modal'
 export default {
   name: 'userList',
+  components : {
+    location,
+    search,
+    page,
+    modal
+  }
   data () {
     return {
       location : [{
@@ -175,6 +184,25 @@ export default {
       }
     }
   },
+  created(){
+    var self = this;
+    //获取用户信息
+    let args = {"Uid":-1};
+    commitAjax.AJAX({
+      url : App.userProfile,
+      data : args,
+      type : "GET",
+      success(r){
+        window.userInfo = r;
+      },
+      error(r){
+        self.$router.push("/");
+      },
+      headers : {
+        Authorization: "Bearer "+userToken.access_token
+      }
+    });
+  },
   methods:{
     //编辑
     edit(val){
@@ -208,12 +236,7 @@ export default {
       }
     }
   },
-  components : {
-    location,
-    search,
-    page,
-    modal
-  }
+  
 }
 </script>
 
