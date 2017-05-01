@@ -3,9 +3,19 @@ import Router from 'vue-router';
 
 Vue.use(Router);
 
+// Router.beforeEach((to, from, next) => {
+//     // do something 
+//     next();
+// });
+
 export default new Router({
-  // mode : "history",
+  mode : "history",
   routes: [
+    { 
+      // path: '*', component: NotFoundComponent 
+      path: '*',
+      component : resolve => require(['@/components/NotFoundComponent.vue'], resolve),
+    },
     {
       path: '/', 
       redirect : "/login"
@@ -33,7 +43,7 @@ export default new Router({
       component : resolve => require(['@/components/user/new.vue'], resolve),
     },
     {
-      path: '/user/edit/:id/:user/:phone/:email/:userType/:devices',
+      path: '/user/edit/:id',
       name: 'userEdit',
       component : resolve => require(['@/components/user/edit.vue'], resolve),
     },
@@ -41,7 +51,17 @@ export default new Router({
     {
       path: '/permission',
       name: 'permission',
-      component : resolve => require(['@/components/permission/list.vue'], resolve),
+      component : resolve => require(['@/components/permission/userList.vue'], resolve),
+    },
+    {
+      path: '/permission/userSetDevices/:id',
+      name: 'permissionUserSetDevices',
+      component : resolve => require(['@/components/permission/userSetDevices.vue'], resolve),
+    },
+    {
+      path: '/permissionDevices',
+      name: 'permissionDevices',
+      component : resolve => require(['@/components/permission/devicesList.vue'], resolve),
     },
     //设备管理
     {
@@ -55,9 +75,24 @@ export default new Router({
       component : resolve => require(['@/components/devices/new.vue'], resolve),
     },
     {
-      path: '/devices/log',
+      path: '/devices/edit/:id',
+      name: 'devicesEdit',
+      component : resolve => require(['@/components/devices/edit.vue'], resolve),
+    },
+    {
+      path: '/devices/log/:id',
       name: 'devicesLog',
       component : resolve => require(['@/components/devices/log.vue'], resolve),
-    }
+    },
+    {
+      path: '/devices/warning/:id',
+      name: 'devicesWarning',
+      component : resolve => require(['@/components/devices/warning.vue'], resolve),
+    },
+    // {
+    //   path: '/devices/warning/:id',
+    //   name: 'devicesWarning',
+    //   component : resolve => require(['@/components/devices/warning.vue'], resolve),
+    // }
   ]
 })

@@ -3,9 +3,9 @@
     <location :list="location"></location>
     <div class="container">
       <!--搜索添加-->
-      <div class="search-add clearfix">
-        <router-link to="/user/new">
-          <input type="button" class="btn btn-primary" value="用户创建">
+      <div class="search-add tr clearfix">
+        <router-link to="/permissionDevices">
+          <input type="button" class="btn btn-primary" value="前往设备列表">
         </router-link>
         <!--<search></search> -->
       </div>
@@ -23,15 +23,11 @@
                   <td>{{key+orderNumber+1}}</td>
                   <td>{{val.uid}}</td> 
                   <td>{{val.userName}}</td>
-                  <td>{{val.phoneNumber}}</td>
-                  <td>{{val.userEmail}}</td>
                   <td>{{val.userTypeName}}</td>
                   <td>{{val.devices}}</td>
-                  <td>{{val.createTime}}</td>
                   <td class="tools">
                     <ul>
-                      <li class="icon" :class="tools.editClass" @click="edit(val)" v-html="tools.edit"></li>
-                      <li class="icon" :class="tools.deleteClass" @click="deleteHint(val,key)" v-html="tools.delete" v-if="!val.devices"></li>
+                      <li class="icon" :class="tools.setClass" @click="set(val)" v-html="tools.set"></li>
                     </ul>
                   </td>
               </tr>
@@ -64,8 +60,11 @@ export default {
   data () {
     return {
       location : [{
-        name : "用户管理",
-        path : "/user"
+        name : "权限管理",
+        path : "/permission"
+      },{
+        name : "用户列表",
+        path : "/permission"
       }],
       modal : {},
       page : {},
@@ -77,25 +76,17 @@ export default {
       },{
         name : "用户名称"
       },{
-        name : "手机"
-      },{
-        name : "邮箱"
-      },{
         name : "用户类型"
       },{
         name : "设备数量"
-      },{
-        name : "创建时间"
       },{
         name : "操作"
       }],
       list : [],
       listStatus : "正在加载中...",
       tools : {
-        edit : "&#xe69e;",
-        editClass : "success hover",
-        delete : "&#xe601;",
-        deleteClass : "danger hover"
+        set : "&#xe603;",
+        setClass : "success hover",
       }
     }
   },
@@ -107,7 +98,6 @@ export default {
     this.getUserList();
   },
   methods:{
-    deletes(){},
     //获取用户信息
     getUserList(page=this.$route.query.page){
       var self = this;
@@ -132,33 +122,13 @@ export default {
       });
     },
     //编辑
-    edit(val){
-      this.$router.push('/user/edit/'+val.uid);
+    set(val){
+      this.$router.push('/permission/userSetDevices/'+val.uid);
     },
-    changePage(num){ 
+    changePage(num){
       //获取用户信息
       this.getUserList(num);
     },
-    //删除提示
-    deleteHint(val,index){
-      var self = this;
-      this.modal = {
-        show : true,
-        type : "error",
-        hint : "你要删除么?",
-        tools : true,
-        submit(){
-          self.modal = {};
-          self.list[index].class = "fadeOut"; 
-          setTimeout(()=>{ 
-            self.list.splice(index,1);
-          },500);
-        },
-        cancel(){
-          self.modal = {};
-        }
-      }
-    }
   },
   
 }

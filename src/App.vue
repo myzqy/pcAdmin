@@ -2,20 +2,16 @@
   <div id="app" v-cloak>
     <template v-if="$route.name=='login'">
       <transition name="fade">
-        <keep-alive>
           <router-view></router-view>
-        </keep-alive>
       </transition>  
     </template>
     <template v-else>
-      <nav-view></nav-view>
+      <nav-view></nav-view> 
       <main id="main"> 
-        <header-view></header-view> 
+        <header-view :userName="userName"></header-view>  
         <div id="content">
           <transition name="fade">
-            <keep-alive>
               <router-view></router-view>
-            </keep-alive>
           </transition>
         </div>
       </main>
@@ -34,7 +30,7 @@ export default {
   name: 'app',
   data (){
     return {
-      
+      userName : "--" 
     }
   },
   components : {
@@ -44,16 +40,24 @@ export default {
   computed: { 
       
   }, 
+   mounted:function(){
+      console.log('已经挂载到模板上:msg变量渲染到模板',this.$route.path)  
+  },
   created(){
+    console.log(123123);
+    let self = this;
+    
     this.$nextTick(()=>{
       setTimeout(()=>{
         document.getElementById("app").setAttribute("class","show");
       },50)
     }); 
+    console.log(self.$route.path,"self.$route.path");
     //获取全局信息
+    window.path = self.$route.path;
     window.pid = "00000000000";
     window.userToken = (localStorage.userToken&&JSON.parse(localStorage.userToken))||{};
-    var self = this;
+    window.pageSize = 2;
     //获取用户信息
     let args = {"Uid":-1};
     commitAjax.AJAX({
@@ -62,9 +66,11 @@ export default {
       type : "GET",
       success(r){
         window.userInfo = r;
+        self.userName = r.content[0].userName;
       },
       error(r){
-        self.$router.push("/");
+        console.log("error 呃呃呃呃");
+        // self.$router.push("/");
       },
       headers : {
         Authorization: "Bearer "+userToken.access_token

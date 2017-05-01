@@ -1,13 +1,14 @@
-<template>
+<template> 
+
   <div class="modal" v-if="modal.show">
     <div class="center-box">
         <i class="bg" @click="clickBG"></i>
         <div class="box">
-            <i v-if="modal.icon" class="icon" :class="modal.iconClass" v-html="modal.icon"></i>
+            <i class="icon" :class="typeData[modal.type].iconClass" v-html="typeData[modal.type].icon"></i>
             <span class="vm">{{modal.hint}}</span>
             <div v-if="modal.tools" class="btn-group tl mt15">
-                <input type="button" class="btn mr10" @click="submit" :class="modal.tools.submitClass||'btn-primary'" :value="modal.tools.submit">
-                <input type="button" class="btn" @click="cancel" :class="modal.tools.cancelClass||'btn-default'" :value="modal.tools.cancel">
+                <input type="button" class="btn mr10 btn-primary" @click="submit" value="提交">
+                <input type="button" class="btn btn-default" @click="cancel" value="取消">
             </div>
         </div>
     </div>
@@ -20,24 +21,88 @@ export default {
   props : ['modal'],
   data () {
     return {
+      typeData : {
+        error : {
+          icon : "&#xe601;",
+          iconClass : "danger",
+        },
+        success : {},
+        warning : {}
+      },
+      // show : false,
+      modalShow : false,
+      // error : {
+      //   icon : "&#xe601;",
+      //   iconClass : "danger",
+      //   // val : val,
+      //   hint : "是否确定要删除？",
+      //   tools : {
+      //     submit : "确定",
+      //     submitClass : "btn-danger",
+      //     submitCallback(){
+      //       self.list[index].class = "fadeOut"; 
+      //       setTimeout(()=>{ 
+      //         self.list.splice(index,1);
+      //       },500);
+      //     },
+      //     cancel : "取消",
+      //     cancelClass : "btn-primary",
+      //     cancelCallback(){
+      //     },
+      //   },
+      // }
     }
   },
   created(){
-    console.log("modal");
+    
+  }, 
+  computed:{
+    params(){
+      if(!this.modal.tools){
+        setTimeout(function(){
+
+        });
+      }
+      return this.modal;
+    }
+  //   // modalTypeChange
+  //   params(){
+  //     let [val,info=""] = [{},this[this.modal.type]];
+  //     // this.show = true;
+  //     // console.log(this.modal,"this.modal",this[this.modal.type],info)
+  //     if(info){
+  //       Object.assign(val,info,this.modal);
+  //       return val;
+  //     }else{
+  //       return {};
+  //     }
+  //   }
   },
   methods : {
     clickBG(){
       if(!this.modal.tools){
-        this.modal.show = "";
+        this.cancel();    
       }
     },
     cancel(){
-      this.modal.show = "";
-      this.modal.tools.cancelCallback();
+      this.modal.cancel();
+      // console.log("cancel")
+      // this.ifShow = false;
+      // this.params.show = false;
+      // this.params.tools.cancelCallback();
+      // this.modal = {};+
+    },
+    hideShow(){
+      this.modalShow = false;
     },
     submit(){
-      this.modal.show = "";
-      this.modal.tools.submitCallback();
+      this.modal.submit();
+      // this.params.show = "";
+      // this.params.tools.submitCallback();
+      // this.modal.callback();
+      //ajax
+      
+      // this.modal = {};
     }
   }
 }

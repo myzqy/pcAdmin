@@ -59,7 +59,7 @@ import $ from 'n-zepto';
 import App from '@/js/app';
 import commitAjax from '@/js/commitAjax';
 import modal from '@/components/tool/modal';
-import {Check} from '@/assets/js/tool.js';
+import {Check} from '@/js/tool/tool.js';
 export default { 
   name: 'login',
   components : {

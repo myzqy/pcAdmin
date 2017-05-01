@@ -3,7 +3,7 @@ export default {
   save({self,hint="保存中..."}){
     self.submitClass = "btn-default";
     self.submitValue = hint;
-    self.submitDisabled = true;
+    self.submitDisabled = true; 
   },
   success({
     self
@@ -12,7 +12,7 @@ export default {
   }){
     self.submitClass = "btn-success";
     self.submitValue = hint;
-    self.submitDisabled = true;
+    self.submitDisabled = false;
     //回调
     callback();
   },
@@ -22,14 +22,13 @@ export default {
     submitClass = "btn-primary",
     callback=()=>{}
   }){
-    console.log("保存失败");
     self.submitClass = "btn-danger";
     self.submitValue = hint;
     self.submitDisabled = true;
     setTimeout(()=>{
       self.submitClass = submitClass;
       self.submitValue = hint;
-      self.submitDisabled = true;
+      self.submitDisabled = false;
       //回调
       callback();
     },1000);

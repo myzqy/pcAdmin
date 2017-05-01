@@ -19,7 +19,6 @@ export default{
   }){
     // if(_AjaxFlag) {
       // window._AjaxFlag = false;
-      console.log(url,"url");
       $.ajax({
         url: url,
         data: data,
@@ -33,7 +32,6 @@ export default{
         dataType: dataType,
         headers : headers,
         success: function (r) {
-          console.log(r,"rrrrrr");
           window._AjaxFlag = true;
             if(before!=undefined){
                 var loading=$("#"+before);
@@ -42,9 +40,8 @@ export default{
           return success(r);
         },
         error: function (e) {
-          console.log(e,"eeeeee");
           window._AjaxFlag = true;
-          return error();
+          return error(e);
           // location.reload();
         }
       })

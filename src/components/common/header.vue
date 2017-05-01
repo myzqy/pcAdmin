@@ -2,14 +2,14 @@
   <div>
     <header id="header">
       <div class="welcome">
-        <i class="icon pl10">&#xe70b;</i>
+        <i class="icon pl10">&#xe62c;</i>
         <span class="vm">{{welcome}}</span>
         <div class="user" @mouseover="over" @mouseout="out">
           <i class="icon pl10">&#xe70b;</i>
           <strong class="nick primary">{{userName}}</strong>
           <i class="icon pl5">&#xe6a6;</i>
         </div>
-      </div>
+      </div> 
     <span>LESS</span>
     </header>
     <ul class="user-tool" :class="userTool" @mouseover="over" @mouseout="out">
@@ -21,13 +21,14 @@
 <script>
 import Router from 'vue-router'
 let vueItem = {
-  name: 'hello',
+  name: 'hello', 
+  props : ['userName'],
   data () {
     return {
       welcome : "欢迎来到管理后台",
-      userName : "关云长",
+      // userName : window.userInfo.content[0].userName,
       userTool : "",
-      tools : [{
+      tools : [{ 
         icon : "&#xe69e;",
         text : "修改密码",
         link : "/changePassword"
@@ -37,6 +38,8 @@ let vueItem = {
         link : "/"
       }]
     }
+  },
+  created(){
   },
   methods:{
     //跳转链接

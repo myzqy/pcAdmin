@@ -50,24 +50,21 @@ export default {
         name : "设备管理",
         path : "/devices"
       },{
-        name : "设备日志",
-        path : "/devices"
+        name : "设备警告日志",
+        path : "/devices/warning"
       }],
       modal : {},
       page : {},
       orderNumber : 0,
       titles : [{
-        name : "序号",
-        styleObject : {
-          width : "60px"
-        }
+        name : "序号"
       },{
         name : "日志时间",
         styleObject : {
           width : "200px"
         }
       },{
-        name : "日志"
+        name : "警告日志"
       }],
       list : [{
         time : "2013-10-10 18:11:35",

@@ -2,7 +2,7 @@ import Vue from 'vue';
 import App from './App';
 import router from './router';
 import VueResource from 'vue-resource';
-import './assets/css/public/main.less';//公用样式
+import './css/public/main.less';//公用样式
 
 // Vue.use(VueResource);
 Vue.config.productionTip = false;
@@ -15,4 +15,3 @@ new Vue({
   template: '<App/>',
   components: { App }
 });
-

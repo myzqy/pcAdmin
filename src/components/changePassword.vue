@@ -34,7 +34,7 @@ import App from '@/js/app';
 import commitAjax from '@/js/commitAjax';
 import modal from '@/components/tool/modal';
 import location from '@/components/tool/location'
-import {Check,Commit} from '@/assets/js/tool.js';
+import {Check,Commit} from '@/js/tool/tool.js';;
 export default { 
   name: 'changePassword',
   components : {
