@@ -44,6 +44,7 @@ export default {
       console.log('已经挂载到模板上:msg变量渲染到模板',this.$route.path)  
   },
   created(){
+
     console.log(123123);
     let self = this;
     
@@ -76,6 +77,7 @@ export default {
         Authorization: "Bearer "+userToken.access_token
       }
     });
+
   }
 }
 </script>

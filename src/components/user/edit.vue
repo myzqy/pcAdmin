@@ -114,6 +114,8 @@ export default {
           self.nowStatus = r.desc||"获取用户信息失败";
         },
         headers : {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
           Authorization: "Bearer "+userToken.access_token
         }
       });

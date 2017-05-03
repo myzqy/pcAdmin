@@ -4,7 +4,7 @@
 import $ from 'n-zepto';
 window._AjaxFlag = true;
 export default{
-  AJAX:function({
+  AJAX({
     url,
     data,
     type,
@@ -12,7 +12,8 @@ export default{
     error=()=>{},
     headers={
       "Accept": "application/json",
-      "contentType": "application/json"
+      // "contentType": "application/json"
+      // "Content-Type": "application/json",
     },
     dataType="json",
     before

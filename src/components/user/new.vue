@@ -322,37 +322,37 @@ export default {
       this.$router.push("/user");
     },
     commit(){
-      if(!this.getCode.token){
-        this.phone.warning = true;
-        this.phone.hint = "请先完成验证手机号码";
-        this.phone.success = false;
-        return;
-      }
+      // if(!this.getCode.token){
+      //   this.phone.warning = true;
+      //   this.phone.hint = "请先完成验证手机号码";
+      //   this.phone.success = false;
+      //   return;
+      // }
       //保存
       Commit.save({
         self : this
-      });
+      }); 
       var self = this;
       let args = {
-        type : "phone",
-        pid : window.pid,
-        phoneNumber : this.list[2].value,
-        password : this.list[1].value,
-        userName : this.list[0].value,
-        userEmail : this.list[3].value, 
-        userType : 1,
-        token : "eb4a3266-0300-424e-a506-c17ca231beac"
+        "type" : "phone",
+        "pid" : window.pid,
+        "phoneNumber" : this.phone.value, 
+        "password" : this.list[1].value,
+        "userName" : this.list[0].value,
+        "userEmail" : this.list[2].value, 
+        "userType" : 1, 
+        "token" : "eb4a3266-0300-424e-a506-c17ca231beac"
         // {"phoneNumber":"13276810715","verifyCode":"653141","token":"eb4a3266-0300-424e-a506-c17ca231beac","expireTime":1493537127385}
       }; 
       commitAjax.AJAX({
-        url : App.userProfile,
+        url : App.userProfile, 
         data : args,
         type : "POST",
         success(r){
           console.log(r,"success rrrr")
         },
         error(r){
-          //保存失败
+          //保存失败 
           Commit.error({
             self : self,
             callback(){
@@ -362,9 +362,11 @@ export default {
           console.log(r,"rrrr")
         },
         headers : {
-          Authorization: "Bearer "+userToken.access_token,
+          "Authorization" : "Bearer "+userToken.access_token,
           "Accept": "application/json",
-          "contentType": "application/json"
+          // "Contenty-Type":'application/json'
+          "contentType": 'application/json; charset=utf-8'
+          // "Content-Type": "application/json",
         }
       });
     }

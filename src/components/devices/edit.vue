@@ -160,8 +160,10 @@ export default {
         },
         error (r){
           self.listStatus = r.desc||"获取数据失败";
-        },
+        }, 
         headers : {
+          "Accept": "application/json",
+          "contentType": "application/json",
           Authorization: "Bearer "+userToken.access_token
         }
       });
