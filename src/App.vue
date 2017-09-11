@@ -16,14 +16,10 @@
         </div>
       </main>
     </template>
-    
   </div>
 </template>
 <script>
-import $ from 'n-zepto';
 import App from '@/js/app';
-import commitAjax from '@/js/commitAjax';
-import Vue from 'vue'
 import navView from './components/common/nav'
 import headerView from './components/common/header'
 export default {
@@ -40,45 +36,66 @@ export default {
   computed: { 
       
   }, 
-   mounted:function(){
-      console.log('已经挂载到模板上:msg变量渲染到模板',this.$route.path)  
-  },
   created(){
-
-    console.log(123123);
     let self = this;
-    
     this.$nextTick(()=>{
       setTimeout(()=>{
         document.getElementById("app").setAttribute("class","show");
       },50)
-    }); 
-    console.log(self.$route.path,"self.$route.path");
+    });
     //获取全局信息
     window.path = self.$route.path;
-    window.pid = "00000000000";
+    window.pid = "01279786102";
+    // window.pid = "01015362077";
     window.userToken = (localStorage.userToken&&JSON.parse(localStorage.userToken))||{};
-    window.pageSize = 2;
+    window.pageSize = 10;
+    this.getUserInfo();
+    // $.ajax({
+    //   // url : "file:///Library/tomcat/webapps/admin/src/device-private-key.csv",
+    //   url : "http://115.28.137.213:8080/device-private-key.csv",
+    //   type : "get", 
+    //   headers:{"Content-Type":"application/json","Authorization":"Bearer "+userToken.access_token},
+    //   dataType : "text", 
+    //   success(r){
+    //     console.log(r,"rrr");
+    //   },
+    //   error(r){
+    //     console.log(r,"rrr");
+    //   }
+    // });
+  }, 
+  methods : { 
     //获取用户信息
-    let args = {"Uid":-1};
-    commitAjax.AJAX({
-      url : App.userProfile,
-      data : args,
-      type : "GET",
-      success(r){
-        window.userInfo = r;
-        self.userName = r.content[0].userName;
-      },
-      error(r){
-        console.log("error 呃呃呃呃");
-        // self.$router.push("/");
-      },
-      headers : {
-        Authorization: "Bearer "+userToken.access_token
-      }
-    });
-
-  }
+    getUserInfo(){
+      var self = this;
+      //获取用户信息
+      let args = {"Uid":-1};
+      $.ajax({
+        url : App.userProfile, 
+        data : args,
+        type : "GET",
+        headers:{"Content-Type":"application/json","Authorization":"Bearer "+userToken.access_token},
+        success(r){
+          if(r){
+            window.userInfo = r;
+            localStorage.userInfo = JSON.stringify(r);
+            self.userName = r.userName;
+            if(r.userTypeName!="杰兴超级管理员"){
+              $(".nav-permission,.nav-user").hide();
+              // self.$router.push("/devices");
+            }else{ 
+              // self.$router.push("/user");
+            }
+          }else if(self.$route.path!="/jiexing/login"){
+            self.$router.push("/jiexing/login");
+          }
+        },
+        error(r){
+          self.$router.push("/jiexing/login");
+        },
+      }); 
+    }
+  },
 }
 </script>
 <style lang="less">

@@ -1,11 +1,13 @@
 <template>
   <nav id="nav">
-    <h1 id="LOGO">LOGO</h1> 
+    <h1 id="LOGO"><img src="../../images/logo.png"></h1> 
     <ul>
-      <router-link v-for="val in list" tag="li" :to="{name:val.name,query:val.query}">
-        <i class="icon" v-html="val.icon"></i>
-        <span>{{val.title}}</span>
-      </router-link>
+      <li v-for="val in list" :class="'nav-'+val.name">
+        <router-link  tag="div" :to="{name:val.name,query:val.query}">
+          <i class="icon" v-html="val.icon"></i>
+          <span>{{val.title}}</span>
+        </router-link>
+      </li>
     </ul>
   </nav>
 </template>
@@ -32,7 +34,8 @@ export default {
         icon : "&#xe6ae;"
       }]
     }
-  }
+  },
+  
 }
 </script>
 
@@ -40,24 +43,32 @@ export default {
 <style lang="less" scoped>
 #LOGO{
   width: 100%;
-  height: 50px;
-  background-color: #131e26;
+  padding: 10px 0;
+  // background-color: #131e26;
   color:#fff;
   font-weight: normal;
   font-size: 20px;
-  line-height: 50px;
   text-align: center;
+  img{
+    height: 80px;
+  }
 }
 #nav{
+  ul{
+    border-top:2px solid #131e26;
+  }
   li{
     width: 100%;
-    padding:0 20px;
-    border-left: 4px solid transparent;
-    border-bottom:2px solid #131e26;
-    box-sizing: border-box;
     color: #869fb1;
     line-height: 45px;
     cursor: pointer;
+    >div{
+      width: 100%;
+      padding:0 20px;
+      border-left: 4px solid transparent; 
+      border-bottom:2px solid #131e26;
+      box-sizing: border-box;
+    }
     span{
       vertical-align: middle;
     }
@@ -65,7 +76,7 @@ export default {
       color: #fff;
       background-color: #131e26;
     }
-    &.router-link-active{
+    .router-link-active{
       border-left: 4px solid #19a9d5;
       color: #fff;
     }

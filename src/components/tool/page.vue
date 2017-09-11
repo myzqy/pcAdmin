@@ -8,7 +8,7 @@
         <li v-for="page in pageData(page)" @click="linkNnmber(page)" :class="page.active+' '+page.omit">{{page.num}}</li>
         <li @click="nextPage(page.number==page.totalPages-1)" class="next" :class="page.number==page.totalPages-1&&'disabled'"><i class="icon">&#xe6a7;</i>{{next}}</li>
     </ul>
-  </div>
+  </div> 
 </template>
 <script>
 import path from '@/js/tool/path';
@@ -26,12 +26,9 @@ export default {
   },
   methods : {
     pageData(data){
+      // debugger;
       data = data || {};
         var pages = [];
-        // totalPages : 20,
-        // totalElements : 200,
-        // numberOfElements : 10,
-        // number : 5
         //小于6页全部展示
         if(data.totalPages<=6){
             for(var i=0;i<data.totalPages;i++){
@@ -40,32 +37,38 @@ export default {
                     active : i==data.number?"active":""
                 });
             }
-        }
-        if(data.totalPages>6){
+        }else{
+          // if(data.totalPages>6){
             //当前页面小于4前面全部展示
-            if(data.number<5){
-                for(var i=0;i<4;i++){
-                    pages.push({
+            // debugger;
+            if(data.number<=4){
+                for(var i=0;i<5;i++){ 
+                    pages.push({ 
                         num : i+1,
                         active : i==data.number?"active":""
                     });
-                }
+                } 
                 if(data.number==4){
-                    pages.push({ num : 5});
+                    pages.push({ num : 6});
                 }
                 pages.push({ num : "...", omit : "omit"});
                 pages.push({ num : data.totalPages });
             }else
             //当前页面在最后3页后面全部展示
             if(data.number>=data.totalPages-4){
+                
                 pages.push({ num : 1 });
                 pages.push({ num : "...", omit : "omit"});
+                if(data.number==data.totalPages-4){
+                  pages.push({ num : data.totalPages-4});
+                }
                 for(var i=data.totalPages-4;i<data.totalPages;i++){
                     pages.push({
                         num : i+1,
-                        active : i==data.number?"active":""
+                        active : i==data.number?"active":"" 
                     });
                 }
+                
             }else
             //页面在中间
             if(data.number>=5&&data.number<data.totalPages-4){
@@ -80,7 +83,9 @@ export default {
                 pages.push({ num : "...", omit : "omit"});
                 pages.push({ num : data.totalPages });
             }
+          // }
         }
+        
         return pages;
     },
     //页码跳转页面
@@ -116,15 +121,15 @@ export default {
     }
   }
 }
-</script>
+</script> 
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less" scoped>
   /*页码*/
 .page{
-  position: relative;
+  position: relative; 
   padding:22px 10px 15px;
-  text-align: right;
+  text-align: right; 
   .pageNumber {
     width: 20px;
     border: none;

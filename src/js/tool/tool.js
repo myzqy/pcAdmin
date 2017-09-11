@@ -4,5 +4,5 @@ import Tips from './tips.js';
 export {
   Check,
   Commit,
-  tips
+  tips,
 }

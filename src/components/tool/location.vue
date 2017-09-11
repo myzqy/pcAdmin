@@ -17,7 +17,9 @@ export default {
   },
   methods:{
     link(link){
-      this.$router.push(link);
+      if(link){
+        this.$router.push(link);
+      }
     }
   }
 }

@@ -31,7 +31,6 @@
 <script>
 import $ from 'n-zepto';
 import App from '@/js/app';
-import commitAjax from '@/js/commitAjax';
 import modal from '@/components/tool/modal';
 import location from '@/components/tool/location'
 import {Check,Commit} from '@/js/tool/tool.js';;
@@ -46,7 +45,7 @@ export default {
     return {
       location : [{
         name : "修改密码",
-        path : "/user"
+        path : "/jiexing/user"
       }],
       list : [
         {
@@ -128,12 +127,15 @@ export default {
       });
       var self = this;
       let args = {"newPassword":this.list[1].value,"oldPassword":this.list[0].value,"pid":window.pid};
-      commitAjax.AJAX({
+      $.ajax({
         url : App.changePassword,
         data : args,
         type : "POST", 
+        headers : {
+          Authorization: "Bearer "+userToken.access_token
+        },
         success (r){
-          self.$router.push("/");
+          self.$router.push("/jiexing");
         },
         error (r){
           console.log("错误")
@@ -146,9 +148,7 @@ export default {
             }
           });
         },
-        headers : {
-          Authorization: "Bearer "+userToken.access_token
-        }
+        
       });
     }
   },

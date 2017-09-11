@@ -12,7 +12,7 @@
             <tr v-for="val in list" :class="val.last&&'line'">
                 <th>{{val.title}}：</th>
                 <td>
-                    <input class="input input-long" :class="val.warning&&'danger'" v-model="val.value" :placeholder="val.placeholder" @blur="val.blur(val)" @focus="focus(val)" :value="val.value"/>
+                    <input class="input input-long" :class="val.warning&&'danger'" v-model="val.value" @keyup.enter="commit" :placeholder="val.placeholder" @blur="val.blur(val)" @focus="focus(val)" :value="val.value"/>
                     <div class="hint" v-if="val.hint">{{val.hint}}</div>
                 </td>
             </tr>
@@ -29,30 +29,33 @@
         </table>
       </template>
     </div>
+    <modal :modal="modal"></modal>
   </div>
 </template>
 
 <script>
 import $ from 'n-zepto';
 import App from '@/js/app';
-import commitAjax from '@/js/commitAjax';
 import {Check,Commit} from '@/js/tool/tool.js';
-import location from '@/components/tool/location'
+import location from '@/components/tool/location';
+import modal from '@/components/tool/modal';
 export default {
   name: 'userNew',
   components : {
     location,
+    modal
   },
   data () {
     return {
       location : [{
-        link : "/user",
+        link : "/jiexing/user",
         name : "用户管理",
-        path : "/user"
+        path : "/jiexing/user"
       },{
         name : "用户修改",
-        path : "/new"
+        path : "/jiexing/new"
       }],
+      modal : {},
       nowStatus : "正在加载中...",
       list : [
         {
@@ -99,25 +102,23 @@ export default {
       let args = {
         Uid : this.$route.params.id
       }; 
-      commitAjax.AJAX({
+      $.ajax({
         url : App.userProfile,
         data : args,
         type : "GET",
-        success(r){
-          console.log(r,"success rrrr",r.content.userName)
-          self.nowStatus = "";
-          self.list[0].value = r.content[0].userName; 
-          self.list[1].value = r.content[0].userEmail;
-        },
-        error(r){
-          console.log(r,"rrrr")
-          self.nowStatus = r.desc||"获取用户信息失败";
-        },
         headers : {
           "Accept": "application/json",
           "Content-Type": "application/json",
           Authorization: "Bearer "+userToken.access_token
-        }
+        },
+        success(r){
+          self.nowStatus = "";
+          self.list[0].value = r.userName; 
+          self.list[1].value = r.userEmail;
+        },
+        error(r){ 
+          self.nowStatus = r.desc||"获取用户信息失败";
+        },
       });
     },
     focus(val){
@@ -125,9 +126,12 @@ export default {
       val.hint = "";
     },
     cancel(){
-      this.$router.push("/user");
+      window.history.go(-1);
     },
     commit(){
+      if(this.disabledCommit){
+        return;
+      }
       if(Check.list(this.list)){
         return;
       }
@@ -137,67 +141,45 @@ export default {
       });
       var self = this;
       let args = {
-        uid : 29738729154,
+        uid : this.$route.params.id,
         pid : window.pid,
-        userName : 185191672195,
-        userEmail : "111@qq.com"
+        userName : this.list[0].value,
+        userEmail : this.list[1].value
       };
+      this.disabledCommit = true;
       // debugger;
-      let aform = new FormData(); 
-      aform.append('uid',args.uid);
-      aform.append('pid',args.pid);
-      commitAjax.AJAX({
+      $.ajax({
         url : App.userProfile,
-        data : args,
+        data : JSON.stringify(args),
         type : "PUT", 
         dataType : "json",
+        headers:{"Content-Type":"application/json","Authorization":"Bearer "+userToken.access_token},
         success(r){
-          console.log(r,"success rrrr")
           //保存失败
-          Commit.success({
+          Commit.success({ 
             self : self,
             callback(){
               self.submitValue = "保存成功";
             }
           });
+          setTimeout(()=>{
+            window.history.go(-1);
+          },1000);
         },
         error(r){
-          //保存失败 
+          self.disabledCommit = false;
+          //保存失败
           Commit.error({
             self : self,
             callback(){
-              self.submitValue = "保存";
+              self.submitValue = "保存"; 
             }
           });
-          console.log(r,"rrrr")
         },
-        headers : {
-          "Accept": "application/json",
-          "contentType": "application/json",
-          Authorization: "Bearer "+userToken.access_token
-        }
       });
     }
   },
 }
-var data = {
-  uid:"29738729154",
-  pid:"00000000000",
-  userName:"185191672195",
-  userEmail:"111@qq.com"
-}
-$.ajax({
-  url : "http://test-uaa-openapi.hekr.me/subUser/profile",
-  data : data,
-  type : "PUT",
-  dataType:"json",
-  success : function(e){
-    console.log(e,"success");
-  },
-  error : function(e){
-    console.log(e,"error");
-  }
-});
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

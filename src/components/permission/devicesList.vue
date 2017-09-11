@@ -4,7 +4,7 @@
     <div class="container">
       <!--搜索添加-->
       <div class="search-add tr clearfix">
-        <router-link to="/permission">
+        <router-link to="/jiexing/permission/user">
           <input type="button" class="btn btn-primary" value="前往用户列表">
         </router-link>
       </div>
@@ -57,10 +57,10 @@ export default {
     return {
       location : [{
         name : "权限管理",
-        path : "/permission"
+        path : "/jiexing/permission"
       },{
         name : "设备管理",
-        path : "/permissionDevices"
+        path : "/jiexing/permissionDevices"
       }],
       modal : {},
       page : {},
@@ -87,7 +87,7 @@ export default {
   methods:{
     //编辑
     set(val){
-      this.$router.push('/permission/userSetDevices/'+val.powerPdNo);
+      this.$router.push('/jiexing/permission/userSetDevices/'+val.powerPdNo);
     },
     //获取列表
     getList(page=this.$route.query.page){

@@ -2,7 +2,7 @@
   <div>
     <header id="header">
       <div class="welcome">
-        <i class="icon pl10">&#xe62c;</i>
+        <i class="icon pl10">&#xe60d;</i>
         <span class="vm">{{welcome}}</span>
         <div class="user" @mouseover="over" @mouseout="out">
           <i class="icon pl10">&#xe70b;</i>
@@ -13,13 +13,13 @@
     <span>LESS</span>
     </header>
     <ul class="user-tool" :class="userTool" @mouseover="over" @mouseout="out">
-      <li v-for="val in tools" @click="Chaining(val.link)"><i class="icon" v-html="val.icon"></i>{{val.text}}</li>
+      <li v-for="val in tools" @click="Chaining(val)"><i class="icon" v-html="val.icon"></i>{{val.text}}</li>
     </ul>
-  </div> 
+  </div>
 </template>
 
 <script>
-import Router from 'vue-router'
+import App from '@/js/app';
 let vueItem = {
   name: 'hello', 
   props : ['userName'],
@@ -31,11 +31,12 @@ let vueItem = {
       tools : [{ 
         icon : "&#xe69e;",
         text : "修改密码",
-        link : "/changePassword"
+        link : "/jiexing/changePassword"
       },{
         icon : "&#xe60a;",
         text : "登出",
-        link : "/"
+        link : "/jiexing",
+        methods : "logout"
       }]
     }
   },
@@ -43,8 +44,34 @@ let vueItem = {
   },
   methods:{
     //跳转链接
-    Chaining(link,query){
-      this.$router.push(link);
+    Chaining(val){
+      if(val.methods){
+        this[val.methods]();
+      }else{
+        this.$router.push(val.link);
+      }
+    },
+    logout(){
+      var self = this;
+      let args = {
+        uid : userInfo.uid,
+        pid : window.pid,
+        source : "JIEXING",
+        token : userToken.access_token
+      };
+      $.ajax({
+        url : App.loginOut, 
+        type : "GET",
+        data : args,
+        headers:{"Content-Type":"application/json","Authorization":"Bearer "+userToken.access_token},
+        success(r){
+          localStorage.userToken = "";
+          self.$router.push("/jiexing/login");
+        },
+        error(){
+
+        }
+      });
     },
     over(){
       this.userTool = "show";

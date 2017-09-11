@@ -4,7 +4,7 @@
       <div class="box">
         <img src="../images/timg.jpeg"><br>
         <span>啊哦-一不小心闯进了未知领域，请点击下面按钮返回首页......</span><br>
-        <router-link to="/user"> 
+        <router-link to="/jiexing/user"> 
           <input type="button" class="btn btn-primary" value="返回首页">
         </router-link>
       </div>

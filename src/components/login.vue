@@ -3,7 +3,7 @@
     <div class="center-table">
       <div class="box">
           <div id="login">
-              <h1 id="login-logo">LOGO</h1> 
+              <h1 id="login-logo"><img src="../images/logo.png"></h1> 
               <ul>
                   <li :class="phone.warning&&'warning-item'">
                     <i class="icon" v-html="phone.icon"></i>
@@ -17,25 +17,8 @@
                     <i class="icon icon-small-big icon-warning" v-html="warningIcon"></i>
                     <i class="tooptip" v-show="password.hint">{{password.hint}}</i>
                   </li>
-                  <!--<li class="code" > 
-                    <label class="label" :class="code.warning&&'warning-item'">  
-                      <input class="input input-login input-small" :class="code.warning&&'danger'" type="text" :placeholder="code.placeholder" @focus="focus(code)" @blur="code.blur(code)"  @keyup.enter="submitLogin" :value="code.value" v-model="code.value">
-                      <i class="icon icon-small-big icon-warning" v-html="warningIcon"></i>
-                      <i class="tooptip" v-show="code.hint">{{code.hint}}</i>
-                    </label>
-                    <input class="btn btn-success btn-high get-code" type="button" @click="getPhoneCode" value="获取验证码">
-                  </li>-->
-                  <!--<li class="photo-code" >
-                    <label class="label" :class="photoCode.warning&&'warning-item'">  
-                      <input class="input input-login" :class="photoCode.warning&&'danger'" type="text" :placeholder="photoCode.placeholder" @focus="focus(photoCode)" @blur="checkPhotoCode(photoCode)"  @keyup.enter="submitLogin" :value="photoCode.value" v-model="photoCode.value">
-                      <i class="icon icon-small-big icon-warning" v-html="warningIcon"></i>
-                      <i class="tooptip" v-show="photoCode.hint">{{photoCode.hint}}</i>
-                    </label>
-                    <img :src="photoCode.codeUrl+photoCode.rid" @click="getPhotoCode(photoCode.codeUrl)">
-                    <span @click="getPhotoCode(photoCode.codeUrl)">换一张</span>
-                  </li>  -->
                   <li>
-                      <input type="button" class="btn btn-primary btn-login btn-high" @click="submitLogin" id="login-btn" value="登录">
+                      <input type="button" class="btn btn-primary btn-login btn-high" @click="submitLogin" id="login-btn" :value="loginVal">
                   </li>
                   <li>
                       <label class="next-auto-login">
@@ -57,7 +40,6 @@
 <script>
 import $ from 'n-zepto';
 import App from '@/js/app';
-import commitAjax from '@/js/commitAjax';
 import modal from '@/components/tool/modal';
 import {Check} from '@/js/tool/tool.js';
 export default { 
@@ -111,7 +93,8 @@ export default {
         value : "",
         hint : "", 
         rid : "123456782314534562", 
-        codeUrl : "http://test-uaa-openapi.hekr.me/images/getImgCaptcha?rid=",
+        codeUrl : App.getImgCaptcha+"?rid=",
+        // codeUrl : "http://test-uaa-openapi.hekr.me/images/getImgCaptcha?rid=",
         placeholder : "图文验证码",
         blur : function(val){
             //验证密码
@@ -120,6 +103,7 @@ export default {
       },
       rememberPassword : localStorage.rememberPassword,
       warningIcon : "&#xe617;",
+      loginVal : "登录",
       modal : {},
     }
   },
@@ -140,45 +124,25 @@ export default {
     getPhotoCode(){
       this.photoCode.rid+=1;
     },
-    //验证图形验证码
-    checkPhotoCode(val){
-      console.log(val,"val");
-      if(val.value&&val.value.length==4){
-        var self = this;
-        let args = {"rid":this.photoCode.rid,"code":val.value};
-        commitAjax.AJAX(App.checkCaptcha,args,"GET",function (r) {
-          self.photoCode.captchaToken = r.captchaToken;
-        },function(r){
-          val.warning = true;
-          val.hint = "图形码错误";
-          val.success = false;
-        });
-      }else{
-        val.warning = true;
-        val.hint = "格式错误";
-        val.success = false;
-      }
-      
-    },
     submitLogin(){
-      // this.phone.value = 18868707977;
-      // this.password.value = "111111";
+      if(this.disabledCommit){
+        return;
+      }
       if(!Check.ifPhone(this.phone)){
         return;
       }else if(!Check.ifPassword(this.password)){
         return;
       } 
-      // window.a = commitAjax;
       let args = {
-        pid : window.pid,
+        pid : window.pid, 
         username : this.phone.value,
         password : this.password.value, 
         clientType : "WEB" 
       };
       var self = this;
-      // args = {}; 
-      // +"pid=00000000000&username="+this.phone.value+"&password="+this.password.value+"&clientType=WEB"
-      commitAjax.AJAX({
+      this.loginVal = "登录中...";
+      this.disabledCommit = true;
+      $.ajax({
         url : App.login,
         data : args,
         type : "POST", 
@@ -194,10 +158,13 @@ export default {
           }
           window.userToken = r;
           localStorage.userToken = JSON.stringify(r);
-          self.$router.push("/user");
-          console.log(r,"success");
+          
+          //获取用户详情 
+          self.getUserDetail();
         },
-        error (r){
+        error (r){ 
+          self.disabledCommit = false;
+          self.loginVal = "登录";
           self.phone.warning = true;
           self.phone.hint = "账号获或密码错误";
         },
@@ -206,6 +173,48 @@ export default {
     checkInput(){
       //验证用户账号
       Check.ifPhone(this.phone);
+    },
+    //获取用户详情 
+    getUserDetail(){
+      var self = this;
+      //获取用户信息
+      let args = {"uid":-1};
+      $.ajax({  
+        url : App.userProfile, 
+        data : args,
+        type : "GET",
+        headers:{"Content-Type":"application/json","Authorization":"Bearer "+userToken.access_token},
+        success(r){
+          window.userInfo = r;
+          localStorage.userInfo = JSON.stringify(r);
+          if(r){
+            if(r.userTypeName!="杰兴超级管理员"){
+              self.$router.push("/jiexing/devices");
+              //设置页面信息
+              self.setPageInfo(()=>{
+                $(".nav-permission,.nav-user").hide();
+                $(".nick").html(r.userName);
+              });
+            }else{
+              self.$router.push("/jiexing/user");
+              //设置页面信息
+              self.setPageInfo(()=>{
+                $(".nick").html(r.userName);
+              });
+            }
+          }
+        }
+      });
+    },
+    //设置页面信息
+    setPageInfo(callback){
+      //监听dom渲染
+      let $tiem = setInterval(()=>{ 
+        if($(".nav-permission").length){
+          clearInterval($tiem); 
+          callback();
+        }
+      },10);
     }
   },
   
@@ -227,7 +236,7 @@ export default {
     display: inline-block;
     position: relative;
     width: 448px;
-    height: 350px;
+    height: 380px;
     border: 1px solid #cfd6de;
     border-radius: 3px;
     background: rgba(255,255,255,.3);
@@ -355,9 +364,13 @@ export default {
 }
 
 #login-logo{
+  padding:20px 0;
   color: #fff;
   font-size: 30px;
   line-height: 100px;
+  img{
+    height: 80px;
+  }
 }
 #login-btn{
   width:350px;

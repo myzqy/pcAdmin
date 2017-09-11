@@ -7,7 +7,7 @@ module.exports = {
     index: path.resolve(__dirname, '../dist/index.html'),
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
+    assetsPublicPath: '/', 
     productionSourceMap: true,
     // Gzip off by default as many popular static hosts such as
     // Surge or Netlify already gzip all static assets for you.
@@ -27,7 +27,25 @@ module.exports = {
     autoOpenBrowser: true,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    productionSourceMap : true,
+    proxyTable: {
+      // "/uaa" : {  
+      //   "target" : "http://test-uaa-openapi.hekr.me",
+      //   "changeOrigin" : true
+      // },  
+      // // "/l" : "http://test-uaa-openapi.hekr.me",
+      // "/user" : {
+      //   "target" : "http://test-user-openapi.hekr.me", 
+      //   "changeOrigin" : true
+      // },
+      // "/subUser" : {
+      //   "target" : "http://test-user-openapi.hekr.me", 
+      //   "changeOrigin" : true
+      // },
+      // 
+      // let head = "https://test-uaa-openapi.hekr.me/";
+      // let head2 = "http://test-user-openapi.hekr.me/";
+    },
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README
     // (https://github.com/webpack/css-loader#sourcemaps)

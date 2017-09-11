@@ -2,12 +2,9 @@
   <div>
     <location :list="location"></location>
     <div class="container">
-      <!--搜索添加-->
-      <div class="search-add tr clearfix">
-        <router-link to="/permissionDevices">
-          <input type="button" class="btn btn-primary" value="前往设备列表">
-        </router-link>
-        <!--<search></search> -->
+      <!--搜索添加--> 
+      <div class="search-add clearfix">
+        <search :search="search" v-on:message2="useSearch"></search>
       </div>
       <div class="table-box">
         <table class="table">
@@ -23,11 +20,15 @@
                   <td>{{key+orderNumber+1}}</td>
                   <td>{{val.uid}}</td> 
                   <td>{{val.userName}}</td>
-                  <td>{{val.userTypeName}}</td>
-                  <td>{{val.devices}}</td>
+                  <td>{{val.phoneNumber}}</td>
+                  <td>{{val.userEmail}}</td>
+                  <td>{{val.userTypeName}}</td> 
+                  <td>{{val.deviceNu}}</td>
+                  <td>{{val.createDate}}</td>
+                  <td>{{val.status==3?"已删除":"正常"}}</td>
                   <td class="tools">
                     <ul>
-                      <li class="icon" :class="tools.setClass" @click="set(val)" v-html="tools.set"></li>
+                      <li v-if="val.status!=3" class="icon" :class="tools.setClass" @click="set(val)" v-html="tools.set"></li>
                     </ul>
                   </td>
               </tr>
@@ -50,24 +51,40 @@ import commitAjax from '@/js/commitAjax';
 import location from '@/components/tool/location';
 import page from '@/components/tool/page';
 import modal from '@/components/tool/modal';
+import search from '@/components/tool/search';
 export default {
   name: 'userList',
   components : {
     location,
     page,
-    modal
+    modal,
+    search
   },
   data () {
     return {
       location : [{
-        name : "权限管理",
-        path : "/permission"
+        name : "权限管理", 
+        path : "/jiexing/permission"
       },{
         name : "用户列表",
-        path : "/permission"
+        path : "/jiexing/permission"
       }],
       modal : {},
       page : {},
+      search : {
+        placeholder : "请输入用户名称查询",
+        key : this.$route.query.searchKey||"userName",
+        value : this.$route.query.searchVal||"",
+        select : [{
+          name : "用户名称",
+          placeholder : "请输入用户名称查询",
+          key : "userName"
+        },{
+          name : "手机号码",
+          placeholder : "请输入手机号码查询",
+          key : "phoneNumber"
+        }]
+      },
       orderNumber : 0,
       titles : [{
         name : "序号"
@@ -76,9 +93,17 @@ export default {
       },{
         name : "用户名称"
       },{
+        name : "手机"
+      },{
+        name : "邮箱"
+      },{
         name : "用户类型"
       },{
         name : "设备数量"
+      },{
+        name : "创建时间"
+      },{
+        name : "用户状态"
       },{
         name : "操作"
       }],
@@ -90,19 +115,24 @@ export default {
       }
     }
   },
-  watch(){
-    console.log(123123123123)
-  },
   created(){
     //获取用户信息
     this.getUserList();
   },
   methods:{
     //获取用户信息
-    getUserList(page=this.$route.query.page){
+    getUserList(page=this.$route.query.page,searchKey=this.$route.query.searchKey,searchVal=this.$route.query.searchVal){
       var self = this;
       page = page||0;
-      let args = {size:window.pageSize,page:page};
+      searchKey = searchKey||"";
+      searchVal = searchVal||""; 
+      let args = {
+        size:window.pageSize,
+        page:page,
+      };
+      if(searchKey){
+        args[searchKey] = searchVal;
+      }
       commitAjax.AJAX({
         url : App.getUserList,
         data : args,
@@ -121,9 +151,14 @@ export default {
         }
       });
     },
+    //搜索添加
+    useSearch(data,value){
+      //获取用户信息
+      this.getUserList(0,data.key,value);
+    },
     //编辑
     set(val){
-      this.$router.push('/permission/userSetDevices/'+val.uid);
+      this.$router.push('/jiexing/permission/user/setDevices/'+val.uid);
     },
     changePage(num){
       //获取用户信息

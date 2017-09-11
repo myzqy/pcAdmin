@@ -20,6 +20,7 @@ export default {
     if(!val.value){ 
         val.hint = hint[0];
         return false;
+        
     }else if(!/^1[34578]\d{9}$/.test(val.value)){
         val.hint = hint[1];
         return false;
@@ -75,6 +76,24 @@ export default {
         return false;
     }
   },
+  //验证数字
+  ifNumber(val,hint="请输入纯数字"){
+    val.warning = true; 
+    val.success = false;
+    if(!val.value){ 
+        val.hint = hint[0];
+        return false;
+    }else if(!/^[0-9]*$/.test(val.value)){
+        val.hint = hint[1];
+        return false;
+    }else{
+        val.warning = false;
+        val.hint = "";
+        val.success = true;
+        return true;
+    }
+  },
+//   (!/^[0-9]*$/.test(obj.value)
   //验证密码
   ifPassword(val,hint=[]){
     val.warning = true; 

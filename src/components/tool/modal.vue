@@ -26,8 +26,14 @@ export default {
           icon : "&#xe601;",
           iconClass : "danger",
         },
-        success : {},
-        warning : {}
+        success : {
+          icon : "&#xe642;",
+          iconClass : "success",
+        },
+        warning : {
+          icon : "&#xe68d;",
+          iconClass : "warning",
+        }
       },
       // show : false,
       modalShow : false,

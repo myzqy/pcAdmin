@@ -1,6 +1,7 @@
 <template>
   <div>
     <location :list="location"></location>
+    <modal :modal="modal"></modal>
     <div class="container">
       <!--基础信息-->
       <table class="input-form mt20" v-show="step=='step1'">
@@ -15,7 +16,7 @@
           <tr>
             <th>{{userType.title}}</th>
             <td> 
-              <select  v-model="userType.value">
+              <select v-model="userType.value">
                 <option v-for="val in userType.list"  @change="userType.change(1,2)" :value="val.value">{{val.text}}</option>
               </select>
             </td>
@@ -56,7 +57,7 @@
             <th>{{getCode.title}}</th>
             <td>
               <label class="label">
-                <input class="input" :class="getCode.warning&&'danger'" :placeholder="getCode.placeholder" @focus="focus(getCode)" @keyup.enter="commit" :value="getCode.value" v-model="getCode.value">
+                <input class="input" :class="getCode.warning&&'danger'" :placeholder="getCode.placeholder" @blur="checkVerifyCode(getCode)" @focus="focus(getCode)" @keyup.enter="commit" :value="getCode.value" v-model="getCode.value">
               </label>
               <input type="button" class="btn" :class="getCode.disabled?'btn-default':'btn-primary'" @click="getPhoneCode(getCode)" :value="getCode.btn+getCode.loadTime">
               <div class="hint" v-if="getCode.hint">{{getCode.hint}}</div>
@@ -73,33 +74,38 @@
           </tr>
         </tbody>
       </table>
-    </div>
+    </div> 
   </div>
 </template>
 
 <script>
-import $ from 'n-zepto';
 import App from '@/js/app';
-import commitAjax from '@/js/commitAjax';
+// import commitAjax from '@/js/commitAjax';
 import {Check,Commit} from '@/js/tool/tool.js';
 import location from '@/components/tool/location';
+import modal from '@/components/tool/modal';
 export default {
   name: 'userNew',
+  components : {
+    location,
+    modal
+  },
   data () {
     return {
       location : [{
-        link : "/user",
+        link : "/jiexing/user",
         name : "用户管理",
-        path : "/user"
+        path : "/jiexing/user"
       },{
         name : "用户创建",
-        path : "/new"
+        path : "/jiexing/new"
       }],
+      modal : {},
       step : "step1",
       list : [
         {
             title : "用户名称",
-            value : "LEE",
+            value : "",
             hint : "",
             placeholder : "请输入用户名称",
             warning : false, 
@@ -111,7 +117,7 @@ export default {
         },
         {
             title : "初始密码",
-            value : "111111",
+            value : "",
             hint : "",
             placeholder : "请输入初始密码",
             warning : false,
@@ -123,7 +129,7 @@ export default {
         },
         {
             title : "邮箱",
-            value : "1308250571@qq.com",
+            value : "",
             hint : "",
             placeholder : "请输入邮箱",
             warning : false, 
@@ -136,7 +142,7 @@ export default {
         }
       ],
       userType : {
-        value : "3",
+        value : "1",
         title : "用户类型",
         list : [{
           text : "超管用户",
@@ -151,7 +157,7 @@ export default {
       },
       phone : {
         title : "手机",
-        value : "18868707977",
+        value : "",
         hint : "",
         placeholder : "请输入手机号码",
         warning : false, 
@@ -177,24 +183,26 @@ export default {
           Check.ifCode(val);
         }
       },
-      photoCode : {
+      photoCode : { 
         title : "图形验证码",
         warning : false,
         success : false,
         value : "",
         hint : "", 
         rid : "123456782314534562",
-        codeUrl : "http://test-uaa-openapi.hekr.me/images/getImgCaptcha?rid=",
+        codeUrl : App.getImgCaptcha+"?rid=",
+        // codeUrl : "http://test-uaa-openapi.hekr.me/images/getImgCaptcha?rid=",
         placeholder : "请输入图文验证码",
         //验证图形验证码
         checkPhotoCode(val){
+          
           val.warning = false;
           val.hint = "";
           val.success = true; 
           if(val.value&&val.value.length==4){
             var self = this;
             let args = {"rid":val.rid,"code":val.value};
-            commitAjax.AJAX({
+            $.ajax({
               url : App.checkCaptcha,
               data : args,
               type : "GET",
@@ -225,6 +233,8 @@ export default {
   },
   created(){
     // this.checkVerifyCode();
+    
+    
   },  
   methods : {
     focus(val){
@@ -252,55 +262,82 @@ export default {
       if(this.phone.success&&this.photoCode.success){
         let args = {
           phoneNumber : this.phone.value,
-          pid : window.pid,
+          pid : "00000000000",
           type : "register",
           token : this.photoCode.captchaToken
         }; 
         var self = this;
-        commitAjax.AJAX({
+        $.ajax({
           url : App.getVerifyCode,
           data : args,
-          type : "GET",
+          type : "get",
           success(r){
+            val.warning = false;
+            val.hint = "";
+            val.success = true;
             self.countdown(60);
             self.getCode.disabled = true;
-            console.log(r,"success rrrr")
           },
           error(r){
-            // console.log(r,"rrrr")
-            self.phone.warning = true;
-            self.phone.hint = JSON.parse(r.response).desc;
-            self.phone.success = false;
+            val.warning = true;
+            val.hint = "获取验证码失败";
+            // self.phone.hint = JSON.parse(r.response).desc;
+            val.success = false;
           },
-          headers:{
-            accept : "application/json"
-          }
         });
       }else{
         this.phone.blur(this.phone);
         this.photoCode.checkPhotoCode(this.photoCode);
       }
     },
-    checkVerifyCode(){
+    checkVerifyCode(getCode){
+      //判断是否是手机号正确
+      if(!Check.ifPhone(this.phone)){
+        return;
+      }
+      getCode.warning = true;
+      getCode.success = false;
+      if(getCode.value.length!=6){
+        getCode.hint = "请输入6位验证码";
+        return; 
+      }
       let args = {
           // phoneNumber : this.list[2].value,
           // code : this.photoCode.captchaToken,
-          phoneNumber : "13276810715",
-          code : 653141,
+          phoneNumber : this.phone.value,
+          code : this.getCode.value,
         }; 
         var self = this;
-        commitAjax.AJAX({
+        $.ajax({
           url : App.checkVerifyCode,
           data : args,
           type : "GET",
           success(r){
-            console.log(r,"success rrrr")
+            getCode.token = r.token;
+            getCode.warning = false;
+            getCode.success = true;
+            getCode.hint = ""; 
+            var self = this;
+            setTimeout(()=>{
+              self.modal = { 
+                show : true,
+                type : "success",
+                hint : "手机验证成功",
+                cancel(){
+                  self.modal = {};
+                }
+              };
+              setTimeout(()=>{
+                self.modal = {};
+              },1000)
+            },1000)
           },
           error(r){
-            console.log(r,"rrrr")
-          },
-          headers:{
-            accept : "application/json"
+            if(JSON.parse(aa.response).desc=="Verify code error"){
+              getCode.hint = "验证码错误";
+            }else{
+              getCode.hint ="验证失败";
+            }
           }
         });
     },
@@ -319,15 +356,20 @@ export default {
       },1000);
     },
     cancel(){
-      this.$router.push("/user");
+      this.$router.push("/jiexing/user");
     },
     commit(){
-      // if(!this.getCode.token){
-      //   this.phone.warning = true;
-      //   this.phone.hint = "请先完成验证手机号码";
-      //   this.phone.success = false;
-      //   return;
-      // }
+      var self = this;
+      if(this.disabledCommit){
+        return;
+      }
+      if(!this.getCode.token){
+        this.phone.warning = true;
+        this.phone.hint = "请先完成验证手机号码";
+        this.phone.success = false;
+        return;
+      }
+      self.disabledCommit = true;
       //保存
       Commit.save({
         self : this
@@ -337,21 +379,36 @@ export default {
         "type" : "phone",
         "pid" : window.pid,
         "phoneNumber" : this.phone.value, 
-        "password" : this.list[1].value,
         "userName" : this.list[0].value,
+        "password" : this.list[1].value,
         "userEmail" : this.list[2].value, 
-        "userType" : 1, 
-        "token" : "eb4a3266-0300-424e-a506-c17ca231beac"
-        // {"phoneNumber":"13276810715","verifyCode":"653141","token":"eb4a3266-0300-424e-a506-c17ca231beac","expireTime":1493537127385}
+        "userType" : this.userType.value,//967129
+        "token" : this.getCode.token,
       }; 
-      commitAjax.AJAX({
-        url : App.userProfile, 
-        data : args,
-        type : "POST",
+		  $.ajax({
+        //提交数据的类型 POST GET
+        type:"POST", 
+        //提交的网址
+        url:App.userProfile,
+        headers:{"Content-Type":"application/json","Authorization":"Bearer "+userToken.access_token},
+        //提交的数据
+        data:JSON.stringify(args),
+        //返回数据的格式
+        datatype: "json",//"xml", "html", "script", "json", "jsonp", "text".
         success(r){
-          console.log(r,"success rrrr")
+          //保存失败
+          Commit.success({
+            self : self,
+            callback(){
+              self.submitValue = "保存成功";
+            }
+          }); 
+          setTimeout(()=>{
+            self.$router.push("/jiexing/user");
+          },1000);
         },
         error(r){
+          self.disabledCommit = false;
           //保存失败 
           Commit.error({
             self : self,
@@ -359,22 +416,12 @@ export default {
               self.submitValue = "保存";
             }
           });
-          console.log(r,"rrrr")
-        },
-        headers : {
-          "Authorization" : "Bearer "+userToken.access_token,
-          "Accept": "application/json",
-          // "Contenty-Type":'application/json'
-          "contentType": 'application/json; charset=utf-8'
-          // "Content-Type": "application/json",
-        }
+        }, 
       });
     }
   },
 
-  components : {
-    location,
-  }
+  
 }
 </script>
 
